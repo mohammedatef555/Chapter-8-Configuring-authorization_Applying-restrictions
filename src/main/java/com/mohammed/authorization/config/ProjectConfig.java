@@ -52,7 +52,6 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll(); // .anyRequest().authenticated(), .anyRequest().permitAll() ...etc
 
         http.csrf().disable();
-
     }
 
 }
