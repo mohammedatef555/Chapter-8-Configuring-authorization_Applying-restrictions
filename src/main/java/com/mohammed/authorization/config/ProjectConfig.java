@@ -2,6 +2,7 @@ package com.mohammed.authorization.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
@@ -17,12 +18,12 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         var manager = new InMemoryUserDetailsManager();
 
-        var user1 = User.withUsername("John")
+        var user1 = User.withUsername("john")
                 .password("12345")
                 .roles("ADMIN")
                 .build();
 
-        var user2 = User.withUsername("Jane")
+        var user2 = User.withUsername("jane")
                 .password("12345")
                 .roles("MANAGER")
                 .build();
@@ -45,7 +46,13 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .mvcMatchers("/hello").hasRole("ADMIN")
                 .mvcMatchers("/ciao").hasRole("MANAGER")
-                .anyRequest().permitAll();
+                .mvcMatchers(HttpMethod.GET, "/a").authenticated()
+                .mvcMatchers(HttpMethod.POST, "/a").permitAll()
+                .mvcMatchers("/a/b/**").authenticated()
+                .anyRequest().permitAll(); // .anyRequest().authenticated(), .anyRequest().permitAll() ...etc
+
+        http.csrf().disable();
+
     }
 
 }
